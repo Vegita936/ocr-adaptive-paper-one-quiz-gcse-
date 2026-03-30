@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCR GCSE Computer Science — Adaptive Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d14;
+    --surface: #16161f;
+    --surface2: #0d8499;
+    --surface3: #253532;
+    --border: rgba(253, 1, 1, 0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0eff8;
+    --text2: #00ffff;
+    --text3: #00e1ff;
+    --accent: #7c6cf8;
+    --accent2: #a99df5;
+    --accent-bg: rgba(124,108,248,0.12);
+    --green: #16b66e;
+    --green-bg: rgba(62,207,142,0.1);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.1);
+    --amber: #fbbf24;
+    --amber-bg: rgba(251,191,36,0.1);
+    --radius: 12px;
+    --radius-lg: 18px;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  #app { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+  /* HEADER */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2.5rem; padding-bottom: 1.25rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .logo { font-family: var(--mono); font-size: 13px; color: var(--accent2); letter-spacing: 0.05em; }
+  .logo span { color: var(--text3); }
+  .stats-pill {
+    display: flex; gap: 1.5rem; font-size: 13px;
+    font-family: var(--mono); color: var(--text3);
+  }
+  .stats-pill b { color: var(--text2); font-weight: 400; }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* HOME SCREEN */
+  .hero { text-align: center; padding: 3rem 0 2rem; }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 600; letter-spacing: -0.03em;
+    line-height: 1.15; margin-bottom: 1rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent2); }
+  .hero p { color: var(--text2); font-size: 1.05rem; max-width: 480px; margin: 0 auto 2.5rem; }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px; margin-bottom: 2rem;
+  }
+  .topic-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .topic-card:hover { border-color: var(--border2); background: var(--surface2); }
+  .topic-card.weak { border-color: rgba(248,113,113,0.3); }
+  .topic-card.strong { border-color: rgba(41, 204, 131, 0.25); }
+  .topic-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .topic-bar { height: 3px; background: var(--surface3); border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+  .topic-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
+  .topic-meta { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0.7rem 1.6rem;
+    border-radius: var(--radius); border: none; cursor: pointer;
+    font-family: var(--sans); font-size: 15px; font-weight: 500;
+    transition: all 0.15s; text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #9585fa; }
+  .btn-ghost { background: var(--surface2); color: var(--text2); border: 0.5px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface3); color: var(--text); }
+  .btn-lg { padding: 0.9rem 2.2rem; font-size: 16px; }
+  .btn-block { width: 100%; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+
+  /* QUIZ SCREEN */
+  .quiz-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .progress-track {
+    flex: 1; height: 4px;
+    background: var(--surface3); border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+  .q-count { font-family: var(--mono); font-size: 13px; color: var(--text3); white-space: nowrap; }
+  .topic-tag {
+    font-size: 12px; font-family: var(--mono);
+    background: var(--accent-bg); color: var(--accent2);
+    padding: 3px 10px; border-radius: 99px;
+  }
+
+  .q-card {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 2rem;
+    margin-bottom: 1.25rem;
+  }
+  .q-difficulty { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-bottom: 0.75rem; }
+  .q-text { font-size: 1.1rem; font-weight: 400; line-height: 1.65; margin-bottom: 1.5rem; }
+  .q-marks { font-size: 12px; color: var(--accent2); font-family: var(--mono); margin-bottom: 1.25rem; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    background: var(--surface2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0.85rem 1.1rem;
+    cursor: pointer; font-size: 15px; text-align: left;
+    transition: all 0.15s; display: flex; align-items: flex-start; gap: 10px;
+  }
+  .opt:hover:not(.locked) { border-color: var(--accent); background: var(--accent-bg); }
+  .opt.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .opt.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+  .opt.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+  .opt.reveal-correct { border-color: var(--green); background: var(--green-bg); }
+  .opt-letter {
+    font-family: var(--mono); font-size: 12px;
+    min-width: 22px; height: 22px;
+    border-radius: 6px; background: var(--surface3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+    color: var(--text3);
+  }
+  .opt.correct .opt-letter { background: rgba(62,207,142,0.2); color: var(--green); }
+  .opt.wrong .opt-letter { background: rgba(248,113,113,0.2); color: var(--red); }
+  .opt.reveal-correct .opt-letter { background: rgba(62,207,142,0.2); color: var(--green); }
+
+  textarea.q-input {
+    width: 100%; background: var(--surface2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0.9rem 1rem;
+    color: var(--text); font-family: var(--sans); font-size: 15px;
+    resize: vertical; min-height: 100px;
+    outline: none; transition: border-color 0.15s;
+  }
+  textarea.q-input:focus { border-color: var(--accent); }
+
+  .answer-reveal {
+    background: var(--surface2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem 1.25rem;
+    margin-top: 1rem; display: none;
+  }
+  .answer-reveal.show { display: block; }
+  .reveal-label { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-bottom: 0.5rem; }
+  .reveal-text { font-size: 14px; color: var(--text2); line-height: 1.6; }
+  .reveal-text ul { padding-left: 1.25rem; }
+  .reveal-text li { margin-bottom: 4px; }
+
+  .self-mark {
+    display: none; gap: 10px; margin-top: 1rem;
+  }
+  .self-mark.show { display: flex; }
+  .self-mark p { font-size: 14px; color: var(--text2); margin-bottom: 8px; width: 100%; }
+
+  .feedback-bar {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem; display: none;
+  }
+  .feedback-bar.show { display: flex; align-items: flex-start; gap: 12px; }
+  .feedback-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .feedback-text { font-size: 14px; color: var(--text2); }
+  .feedback-text strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+  .action-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 0.75rem; }
+
+  /* RESULTS SCREEN */
+  .results-hero { text-align: center; padding: 2.5rem 0 2rem; }
+  .grade-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 100px; height: 100px; border-radius: 50%;
+    font-family: var(--mono); font-size: 3rem; font-weight: 700;
+    margin-bottom: 1.5rem;
+    border: 2px solid;
+  }
+  .results-hero h2 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .results-hero p { color: var(--text2); }
+
+  .score-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin: 2rem 0;
+  }
+  .score-card {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem;
+    text-align: center;
+  }
+  .score-val { font-size: 2rem; font-weight: 600; font-family: var(--mono); }
+  .score-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .breakdown { margin: 2rem 0; }
+  .breakdown h3 { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
+  .topic-result {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0.75rem 0; border-bottom: 0.5px solid var(--border);
+  }
+  .topic-result-name { flex: 1; font-size: 14px; }
+  .topic-result-bar { width: 120px; height: 6px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+  .topic-result-fill { height: 100%; border-radius: 99px; }
+  .topic-result-pct { font-family: var(--mono); font-size: 13px; min-width: 40px; text-align: right; }
+
+  .weak-notice {
+    background: rgba(248,113,113,0.07); border: 0.5px solid rgba(248,113,113,0.2);
+    border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1.5rem 0;
+  }
+  .weak-notice h4 { font-size: 14px; font-weight: 500; color: var(--red); margin-bottom: 6px; }
+  .weak-notice p { font-size: 13px; color: var(--text2); }
+
+  /* MASTERY TRACKER */
+  .mastery-screen { padding-top: 1rem; }
+  .mastery-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1.5rem; }
+  .mastery-grid { display: flex; flex-direction: column; gap: 10px; }
+  .mastery-row {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 1rem 1.25rem;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .mastery-topic { flex: 1; }
+  .mastery-name { font-size: 14px; font-weight: 500; }
+  .mastery-sub { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-top: 3px; }
+  .mastery-bar { width: 160px; height: 6px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+  .mastery-fill { height: 100%; border-radius: 99px; transition: width 0.5s; }
+  .mastery-stars { font-family: var(--mono); font-size: 14px; color: var(--text3); min-width: 48px; text-align: right; }
+  .mastered { color: var(--green); }
+
+  /* NAV */
+  .nav { display: flex; gap: 8px; margin-bottom: 2rem; }
+  .nav-btn {
+    font-size: 13px; padding: 0.4rem 0.9rem;
+    border-radius: 99px; border: 0.5px solid var(--border);
+    background: transparent; color: var(--text3); cursor: pointer;
+    font-family: var(--sans); transition: all 0.15s;
+  }
+  .nav-btn.active, .nav-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .q-card, .results-hero, .mastery-row { animation: fadeIn 0.25s ease; }
+
+  @media (max-width: 540px) {
+    .score-grid { grid-template-columns: 1fr 1fr; }
+    .topic-result-bar { width: 70px; }
+    .mastery-bar { width: 80px; }
+    .stats-pill { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="logo">OCR J277/01 <span>// Computer Systems</span></div>
+    <div class="stats-pill">
+      <span>Session <b id="hdr-session">1</b></span>
+      <span>Total Q <b id="hdr-total">0</b></span>
+      <span>Streak <b id="hdr-streak">0</b></span>
+    </div>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <h1>Master <em>Computer Systems</em><br>through adaptive revision</h1>
+      <p>Questions pulled from OCR GCSE 2022–2024 past papers. Your weak spots get drilled harder.</p>
+    </div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="showSection('topics')">Topics</button>
+      <button class="nav-btn" onclick="showSection('mastery')">Mastery</button>
+    </div>
+    <div id="section-topics">
+      <div class="topic-grid" id="topic-grid"></div>
+      <div class="cta-row">
+        <button class="btn btn-primary btn-lg" onclick="startQuiz('adaptive')">Start Adaptive Quiz</button>
+        <button class="btn btn-ghost" onclick="startQuiz('weak')">Target Weak Areas</button>
+        <button class="btn btn-ghost" onclick="startQuiz('all')">All Topics</button>
+      </div>
+    </div>
+    <div id="section-mastery" style="display:none" class="mastery-screen">
+      <div class="mastery-grid" id="mastery-grid"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-header">
+      <div class="topic-tag" id="q-topic-tag">Topic</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="q-count" id="q-count">1 / 10</div>
+    </div>
+    <div class="q-card" id="q-card">
+      <div class="q-difficulty" id="q-difficulty"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-marks" id="q-marks"></div>
+      <div class="options" id="options-container"></div>
+      <textarea class="q-input" id="q-input" placeholder="Type your answer here..." style="display:none"></textarea>
+      <div class="answer-reveal" id="answer-reveal">
+        <div class="reveal-label">Mark scheme answer:</div>
+        <div class="reveal-text" id="reveal-text"></div>
+      </div>
+      <div class="self-mark" id="self-mark">
+        <div style="width:100%">
+          <p>How well did you do? Mark yourself honestly:</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-ghost" onclick="selfMark(0)" style="flex:1;min-width:80px;border-color:rgba(248,113,113,0.4);color:var(--red)">✗ Wrong</button>
+            <button class="btn btn-ghost" onclick="selfMark(0.5)" style="flex:1;min-width:80px;border-color:rgba(251,191,36,0.4);color:var(--amber)">~ Partial</button>
+            <button class="btn btn-ghost" onclick="selfMark(1)" style="flex:1;min-width:80px;border-color:rgba(62,207,142,0.4);color:var(--green)">✓ Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="feedback-bar" id="feedback-bar">
+      <div class="feedback-icon" id="feedback-icon"></div>
+      <div class="feedback-text"><strong id="feedback-head"></strong><span id="feedback-body"></span></div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-ghost" id="btn-reveal" onclick="revealAnswer()">Show answer</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" style="display:none">Next →</button>
+      <button class="btn btn-primary" id="btn-finish" onclick="showResults()" style="display:none">See Results →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="screen-results">
+    <div class="results-hero">
+      <div class="grade-badge" id="grade-badge"></div>
+      <h2 id="results-headline"></h2>
+      <p id="results-sub"></p>
+    </div>
+    <div class="score-grid">
+      <div class="score-card"><div class="score-val" id="r-score"></div><div class="score-label">Score</div></div>
+      <div class="score-card"><div class="score-val" id="r-pct"></div><div class="score-label">Percentage</div></div>
+      <div class="score-card"><div class="score-val" id="r-streak"></div><div class="score-label">Best Streak</div></div>
+    </div>
+    <div class="breakdown">
+      <h3>Performance by topic</h3>
+      <div id="topic-breakdown"></div>
+    </div>
+    <div class="weak-notice" id="weak-notice" style="display:none">
+      <h4>Areas to focus on next</h4>
+      <p id="weak-notice-text"></p>
+    </div>
+    <div class="cta-row" style="margin-top:2rem">
+      <button class="btn btn-primary btn-lg" onclick="startQuiz('adaptive')">New Adaptive Quiz</button>
+      <button class="btn btn-ghost" onclick="startQuiz('weak')">Drill Weak Areas</button>
+      <button class="btn btn-ghost" onclick="goHome()">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = {
+  binary: 'Binary & Data Representation',
+  cpu: 'CPU & Fetch-Execute Cycle',
+  networks: 'Networks & Protocols',
+  security: 'Security & Legislation',
+  storage: 'Storage & Memory',
+  sound: 'Sound & Compression',
+  images: 'Images & Colour',
+  os: 'Operating Systems & Utility Software',
+  ethics: 'Ethics, Legal & Privacy Issues',
+  embedded: 'Embedded Systems',
+};
+
+const QUESTIONS = [
+  // BINARY
+  {id:'b1', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'How many unique values can be represented using 4 bits?',
+   marks:1,
+   options:['8','12','16','32'], correct:2,
+   explanation:'With n bits you can represent 2ⁿ values. 2⁴ = 16 unique values (0–15).'},
+
+  {id:'b2', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'Convert the denary number 221 into 8-bit binary. Which answer is correct?',
+   marks:2,
+   options:['11011011','11011101','11101101','10111101'], correct:1,
+   explanation:'221 = 128+64+16+8+4+1 = 11011101'},
+
+  {id:'b3', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'Convert the hexadecimal number 2F into denary.',
+   marks:2,
+   options:['31','45','47','53'], correct:2,
+   explanation:'2×16 = 32; F = 15; 32+15 = 47'},
+
+  {id:'b4', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'Convert binary 10110000 into hexadecimal.',
+   marks:1,
+   options:['A0','B0','C0','D0'], correct:1,
+   explanation:'1011 = B (11), 0000 = 0. So B0.'},
+
+  {id:'b5', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'A binary right shift of 3 places is applied to 10001110. What is the result?',
+   marks:1,
+   options:['00010001','00011000','01000111','10001110'], correct:0,
+   explanation:'Right shift 3: 10001110 → 00010001 (divide by 8, discard LSBs)'},
+
+  {id:'b6', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'Which statement about binary is TRUE?',
+   marks:1,
+   options:['Binary digits can be 0, 1 and 2','The left-most bit has the smallest value','Binary is used because computers use switches that are on or off','The smallest 8-bit integer is 1'],
+   correct:2,
+   explanation:'Computers use transistors acting as on/off switches, naturally representing 0 and 1.'},
+
+  {id:'b7', topic:'binary', type:'mcq', difficulty:'Higher',
+   q:'Add the two 8-bit binary numbers: 01101011 + 00001111. What is the result?',
+   marks:2,
+   options:['01111000','01111010','10000010','01110010'], correct:1,
+   explanation:'01101011 + 00001111 = 01111010 (with carries at positions 1,2,3,4)'},
+
+  {id:'b8', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'What is the result of a LEFT binary shift of 4 places on 00001111?',
+   marks:1,
+   options:['00000000','11110000','11111111','00111100'], correct:1,
+   explanation:'00001111 shifted left 4 = 11110000 (the leading 0s drop off, multiplying by 16)'},
+
+  {id:'b9', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'Which file size is LARGEST?',
+   marks:1,
+   options:['2000000 bytes','2300 KB','200 MB','0.1 GB'],
+   correct:2,
+   explanation:'200 MB = 200,000,000 bytes. 0.1 GB = 100,000,000 bytes. 2300 KB ≈ 2,300,000 bytes. So 200 MB is largest.'},
+
+  {id:'b10', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'Convert 11110000 (8-bit binary) to denary.',
+   marks:1,
+   options:['15','224','240','248'], correct:2,
+   explanation:'128+64+32+16 = 240'},
+
+  {id:'b11', topic:'binary', type:'mcq', difficulty:'Foundation',
+   q:'What is the largest denary number representable by a 6-bit binary number?',
+   marks:1,
+   options:['32','63','64','127'], correct:1,
+   explanation:'2⁶ - 1 = 64 - 1 = 63'},
+
+  {id:'b12', topic:'binary', type:'mcq', difficulty:'Higher',
+   q:'The binary number 10110000 becomes 10000000 after a shift. What shift was applied?',
+   marks:2,
+   options:['Right shift 3 places','Left shift 3 places','Left shift 2 places','Right shift 2 places'],
+   correct:1,
+   explanation:'10110000 → 10000000 is a LEFT shift of 3 places (moves bits left, zeros fill right).'},
+
+  // CPU
+  {id:'c1', topic:'cpu', type:'mcq', difficulty:'Foundation',
+   q:'Which register stores the address of the NEXT instruction to be fetched?',
+   marks:1,
+   options:['MAR','MDR','ALU','PC (Program Counter)'], correct:3,
+   explanation:'The Program Counter (PC) always holds the address of the next instruction. It increments after each fetch.'},
+
+  {id:'c2', topic:'cpu', type:'mcq', difficulty:'Foundation',
+   q:'What is the role of the ALU (Arithmetic Logic Unit)?',
+   marks:1,
+   options:['Stores the address of data to be fetched','Performs mathematical and logical calculations','Controls and coordinates hardware','Stores currently running data'],
+   correct:1,
+   explanation:'The ALU performs all arithmetic (add, subtract) and logical (AND, OR, NOT) operations.'},
+
+  {id:'c3', topic:'cpu', type:'mcq', difficulty:'Foundation',
+   q:'The MAR (Memory Address Register) is used to:',
+   marks:1,
+   options:['Store the result of ALU calculations','Store the address of data to be fetched or stored','Decode the current instruction','Count instructions executed'],
+   correct:1,
+   explanation:'The MAR holds the memory address for the data to be read from or written to.'},
+
+  {id:'c4', topic:'cpu', type:'mcq', difficulty:'Higher',
+   q:'Which THREE characteristics of a CPU can affect its performance?',
+   marks:3,
+   options:['Clock speed, cache size, number of cores','Clock speed, RAM size, screen resolution','Number of cores, bit depth, sample rate','Cache size, voltage, monitor type'],
+   correct:0,
+   explanation:'Clock speed (frequency), cache size, and number of cores are the three CPU performance factors on the spec.'},
+
+  {id:'c5', topic:'cpu', type:'mcq', difficulty:'Foundation',
+   q:'During the Fetch-Execute cycle, which of the following best describes what happens?',
+   marks:2,
+   options:['Data is permanently stored on the hard drive','Instructions are fetched from RAM, decoded and then executed','Instructions are written directly to the CPU','Data moves from the GPU to the CPU'],
+   correct:1,
+   explanation:'The CPU fetches the instruction from RAM (using PC and MAR), decodes it, then executes it. The PC then increments.'},
+
+  {id:'c6', topic:'cpu', type:'mcq', difficulty:'Foundation',
+   q:'The MDR (Memory Data Register) stores:',
+   marks:1,
+   options:['The address of the next instruction','The data fetched from memory or about to be stored','The result of the current calculation','The number of instructions completed'],
+   correct:1,
+   explanation:'The MDR holds the actual data/instruction that was fetched from the memory location in the MAR.'},
+
+  // NETWORKS
+  {id:'n1', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'Which protocol is used to access a website SECURELY?',
+   marks:1,
+   options:['HTTP','FTP','HTTPS','SMTP'], correct:2,
+   explanation:'HTTPS (HyperText Transfer Protocol Secure) uses encryption (TLS) to protect data in transit.'},
+
+  {id:'n2', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'Which protocol is used to SEND an email?',
+   marks:1,
+   options:['IMAP','POP3','HTTPS','SMTP'], correct:3,
+   explanation:'SMTP (Simple Mail Transfer Protocol) is used to send emails. IMAP/POP3 are used to retrieve emails.'},
+
+  {id:'n3', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'An IPv4 address consists of:',
+   marks:1,
+   options:['4 groups of hex, separated by colons','4 groups of denary (0–255), separated by full stops','6 groups of hex, separated by hyphens','8 groups of hex, separated by colons'],
+   correct:1,
+   explanation:'IPv4: four groups of denary digits, each 0–255, separated by full stops e.g. 192.168.1.1'},
+
+  {id:'n4', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'What is the role of a DNS (Domain Name Server)?',
+   marks:1,
+   options:['Stores web pages for download','Translates domain names (URLs) into IP addresses','Assigns MAC addresses to devices','Encrypts data in transmission'],
+   correct:1,
+   explanation:'DNS converts human-readable domain names (e.g. bbc.co.uk) into the numeric IP address needed to find the server.'},
+
+  {id:'n5', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'Which of these is a task carried out by a ROUTER?',
+   marks:1,
+   options:['Stores web page files','Identifies the most efficient path to a destination','Converts analogue to digital signals','Encrypts passwords'],
+   correct:1,
+   explanation:'Routers forward data packets and find the best path to the destination IP address using a routing table.'},
+
+  {id:'n6', topic:'networks', type:'mcq', difficulty:'Higher',
+   q:'Why does having more devices on a network at the same time affect performance?',
+   marks:3,
+   options:['The network physically shrinks in size','Bandwidth is shared between all devices, so each gets less','The MAC addresses get confused','The router deletes old packets automatically'],
+   correct:1,
+   explanation:'Bandwidth is shared — more devices mean less available bandwidth per device, causing slower transmission and increased latency.'},
+
+  {id:'n7', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'In a STAR TOPOLOGY, all devices connect to a central:',
+   marks:1,
+   options:['Hub only','Router only','Switch or hub','Another device in the ring'],
+   correct:2,
+   explanation:'Star topology has all nodes connected to a central switch (or hub). All data passes through the central device.'},
+
+  {id:'n8', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'Which protocol is most appropriate for CHECKING NEW EMAILS in an inbox?',
+   marks:1,
+   options:['SMTP','HTTP','IMAP or POP3','FTP'],
+   correct:2,
+   explanation:'IMAP and POP3 are protocols used to retrieve/check emails on a mail server.'},
+
+  {id:'n9', topic:'networks', type:'mcq', difficulty:'Higher',
+   q:'A MAC address is typically presented as:',
+   marks:2,
+   options:['4 groups of denary separated by full stops','6 pairs of hexadecimal digits separated by colons or hyphens','8 groups of hex separated by colons','A single 32-bit binary number'],
+   correct:1,
+   explanation:'MAC addresses are 48-bit identifiers shown as 6 pairs of hex digits (e.g. A1:B2:C3:D4:E5:F6).'},
+
+  {id:'n10', topic:'networks', type:'mcq', difficulty:'Foundation',
+   q:'One benefit of WIRED connections over wireless in a large building (e.g. airport) is:',
+   marks:2,
+   options:['Easier to add new devices anywhere','Can move around freely','More secure and reliable, with consistent bandwidth','Uses less electricity overall'],
+   correct:2,
+   explanation:'Wired connections offer better security (harder to intercept), more reliable connection, and consistent high bandwidth.'},
+
+  // SECURITY
+  {id:'s1', topic:'security', type:'mcq', difficulty:'Foundation',
+   q:'A student guesses their teacher\'s password and accesses their account. Which law covers this?',
+   marks:1,
+   options:['Data Protection Act (2018)','Computer Misuse Act (1990)','Copyright Designs and Patents Act (1988)','Freedom of Information Act'],
+   correct:1,
+   explanation:'The Computer Misuse Act (1990) covers unauthorised access to computer systems.'},
+
+  {id:'s2', topic:'security', type:'mcq', difficulty:'Foundation',
+   q:'A company transmits personal data to another company without the individual\'s permission. Which law covers this?',
+   marks:1,
+   options:['Computer Misuse Act (1990)','Copyright Designs and Patents Act (1988)','Data Protection Act (2018)','Equality Act'],
+   correct:2,
+   explanation:'The Data Protection Act (2018) governs how personal data is handled, stored and shared.'},
+
+  {id:'s3', topic:'security', type:'mcq', difficulty:'Foundation',
+   q:'Which is an example of PHYSICAL security to protect computer systems?',
+   marks:1,
+   options:['Anti-malware software','Biometric entry/keycard locks','Firewall rules','Encryption of files'],
+   correct:1,
+   explanation:'Physical security includes locks, key cards, biometrics on doors, CCTV, security guards — physical barriers to access.'},
+
+  {id:'s4', topic:'security', type:'mcq', difficulty:'Foundation',
+   q:'What does a FIREWALL do?',
+   marks:2,
+   options:['Scans files for viruses and deletes them','Encrypts all outgoing data','Monitors and filters incoming/outgoing network traffic','Backs up data automatically'],
+   correct:2,
+   explanation:'A firewall monitors traffic and blocks unauthorised incoming/outgoing connections based on defined rules.'},
+
+  {id:'s5', topic:'security', type:'mcq', difficulty:'Higher',
+   q:'Which threat involves sending fake emails to trick users into revealing personal data?',
+   marks:2,
+   options:['SQL injection','Phishing','Brute-force attack','Denial of Service'],
+   correct:1,
+   explanation:'Phishing uses deceptive emails or websites to trick users into entering credentials or personal information.'},
+
+  {id:'s6', topic:'security', type:'mcq', difficulty:'Foundation',
+   q:'The interface for a piece of software is replicated by a rival company. Which law covers this?',
+   marks:1,
+   options:['Computer Misuse Act (1990)','Data Protection Act (2018)','Copyright Designs and Patents Act (1988)','GDPR'],
+   correct:2,
+   explanation:'The Copyright, Designs and Patents Act (1988) protects creative works including software interfaces.'},
+
+  {id:'s7', topic:'security', type:'mcq', difficulty:'Higher',
+   q:'Which security method helps prevent DATA INTERCEPTION during transmission?',
+   marks:1,
+   options:['Anti-malware','Penetration testing','Encryption','Password policy'],
+   correct:2,
+   explanation:'Encryption scrambles data so that even if intercepted, it cannot be understood without the decryption key.'},
+
+  {id:'s8', topic:'security', type:'mcq', difficulty:'Foundation',
+   q:'Two-step authentication improves security because:',
+   marks:2,
+   options:['It uses a longer password','An attacker also needs access to the user\'s second device to log in','It automatically blocks hackers','It encrypts the password itself'],
+   correct:1,
+   explanation:'Two-step (multi-factor) auth sends a code to a separate device — an attacker needs both the password AND that device.'},
+
+  // STORAGE
+  {id:'st1', topic:'storage', type:'mcq', difficulty:'Foundation',
+   q:'What is the key difference between RAM and ROM?',
+   marks:1,
+   options:['RAM is slower than ROM','ROM is volatile, RAM is non-volatile','RAM is volatile (loses data when power off), ROM is non-volatile','RAM stores the OS permanently, ROM stores running programs'],
+   correct:2,
+   explanation:'RAM is volatile — data is lost when power is removed. ROM is non-volatile — data persists without power.'},
+
+  {id:'st2', topic:'storage', type:'mcq', difficulty:'Foundation',
+   q:'Why does a computer need SECONDARY storage?',
+   marks:2,
+   options:['To run programs faster','To store data permanently even when the computer is off','To increase the CPU clock speed','To share bandwidth across devices'],
+   correct:1,
+   explanation:'Secondary storage (HDD, SSD, etc.) is non-volatile — data is retained permanently even without power.'},
+
+  {id:'st3', topic:'storage', type:'mcq', difficulty:'Higher',
+   q:'Virtual Memory is used when:',
+   marks:2,
+   options:['The hard drive is full','RAM is full or nearly full, so part of secondary storage acts as extra RAM','ROM cannot hold the OS','The CPU needs more cache'],
+   correct:1,
+   explanation:'When RAM fills up, the OS uses a section of secondary storage as virtual memory to hold less-used data temporarily.'},
+
+  {id:'st4', topic:'storage', type:'mcq', difficulty:'Foundation',
+   q:'Which type of secondary storage has NO moving parts and is more durable/portable?',
+   marks:1,
+   options:['Magnetic hard drive (HDD)','Optical disc (CD/DVD)','Solid State Drive (SSD)','Tape drive'],
+   correct:2,
+   explanation:'SSDs use flash memory with no moving parts — making them faster, more durable, and portable.'},
+
+  {id:'st5', topic:'storage', type:'mcq', difficulty:'Foundation',
+   q:'A musician has 1000 recordings averaging 3 MB each. What total storage is needed in GB?',
+   marks:2,
+   options:['0.3 GB','3 GB','30 GB','300 GB'], correct:1,
+   explanation:'1000 × 3 MB = 3000 MB = 3 GB'},
+
+  {id:'st6', topic:'storage', type:'mcq', difficulty:'Foundation',
+   q:'Which is the SMALLEST secondary storage capacity?',
+   marks:1,
+   options:['2.1 GB','300 MB','200,000 KB','0.0021 TB'],
+   correct:2,
+   explanation:'200,000 KB = ~195 MB. 300 MB > 195 MB. 2.1 GB = 2100 MB. 0.0021 TB = 2.1 GB. So 200,000 KB is smallest.'},
+
+  // SOUND
+  {id:'so1', topic:'sound', type:'mcq', difficulty:'Foundation',
+   q:'Sound sampling involves:',
+   marks:1,
+   options:['Measuring the frequency of a wave a set number of times per second','Measuring the amplitude of a wave at set intervals','Storing the whole waveform as a continuous signal','Measuring the digital waveform\'s frequency'],
+   correct:1,
+   explanation:'Sampling measures the amplitude (height) of the sound wave at regular time intervals and stores each as a binary number.'},
+
+  {id:'so2', topic:'sound', type:'mcq', difficulty:'Higher',
+   q:'Increasing the BIT DEPTH of a sound recording will:',
+   marks:2,
+   options:['Decrease the sample rate','Increase the file size and improve accuracy of amplitude measurement','Decrease the number of samples taken','Have no effect on quality'],
+   correct:1,
+   explanation:'Higher bit depth = more bits per sample = larger file size + wider range of amplitude values = more accurate/higher quality sound.'},
+
+  {id:'so3', topic:'sound', type:'mcq', difficulty:'Foundation',
+   q:'Changing the sample rate from 44kHz to 8kHz will:',
+   marks:2,
+   options:['Increase file size and increase accuracy','Decrease file size and decrease accuracy','Increase file size and decrease accuracy','Decrease file size and increase accuracy'],
+   correct:1,
+   explanation:'Lower sample rate = fewer samples per second = smaller file AND less accurate representation of the original sound.'},
+
+  // IMAGES
+  {id:'im1', topic:'images', type:'mcq', difficulty:'Foundation',
+   q:'Increasing the COLOUR DEPTH of an image from 8-bit to 16-bit will:',
+   marks:2,
+   options:['Decrease file size and increase colour range','Increase file size and increase colour range','Increase file size and decrease colour range','No effect on file size'],
+   correct:1,
+   explanation:'More bits per pixel = more possible colours AND larger file size. 8-bit = 256 colours; 16-bit = 65,536 colours.'},
+
+  {id:'im2', topic:'images', type:'mcq', difficulty:'Foundation',
+   q:'With a colour depth of 4 bits, the maximum number of different colours representable is:',
+   marks:1,
+   options:['4','8','16','32'], correct:2,
+   explanation:'2⁴ = 16 different colour values possible with 4 bits.'},
+
+  {id:'im3', topic:'images', type:'mcq', difficulty:'Foundation',
+   q:'Which type of compression should be used for a TEXT document to preserve all data?',
+   marks:2,
+   options:['Lossy — it reduces file size the most','Lossless — no data is permanently lost and the file works correctly','Either works equally well','Only optical compression'],
+   correct:1,
+   explanation:'Lossless compression must be used for text — losing even one character/bit could make the file unreadable or incorrect.'},
+
+  {id:'im4', topic:'images', type:'mcq', difficulty:'Higher',
+   q:'Why might LOSSY compression be appropriate for an image but NOT for a text document?',
+   marks:2,
+   options:['Images are always smaller files','Minor quality loss in images may not be noticeable, but any missing text data breaks meaning','Text files compress more than images','Lossy is only for video files'],
+   correct:1,
+   explanation:'Lossy removes data permanently. In images, small quality reductions are often imperceptible. In text, any lost data changes meaning.'},
+
+  {id:'im5', topic:'images', type:'mcq', difficulty:'Foundation',
+   q:'What is METADATA in an image file?',
+   marks:1,
+   options:['The pixels that make up the image','Data ABOUT the image, such as width, height, date taken, colour depth','The colour depth of individual pixels','The algorithm used to compress the image'],
+   correct:1,
+   explanation:'Metadata is information stored about the image — e.g. width, height, date, geolocation, file size, colour depth.'},
+
+  // OS
+  {id:'os1', topic:'os', type:'mcq', difficulty:'Foundation',
+   q:'Which OS function manages moving data from secondary storage into RAM?',
+   marks:1,
+   options:['User interface','Peripheral management','Memory management','File management'],
+   correct:2,
+   explanation:'Memory management controls the allocation of memory (RAM) including loading programs and data from secondary storage.'},
+
+  {id:'os2', topic:'os', type:'mcq', difficulty:'Foundation',
+   q:'DEFRAGMENTATION software:',
+   marks:2,
+   options:['Removes viruses from fragmented files','Rearranges split files so they are stored consecutively, improving read speed','Encrypts data on the disk','Deletes duplicate files to free space'],
+   correct:1,
+   explanation:'Defrag analyses a disk for fragmented files, moves them to be consecutive, so the read head travels less distance — improving speed.'},
+
+  {id:'os3', topic:'os', type:'mcq', difficulty:'Foundation',
+   q:'ENCRYPTION software:',
+   marks:2,
+   options:['Stops data from being intercepted on the network','Changes data using a key so intercepted data cannot be understood','Scans incoming traffic for viruses','Backs up data automatically'],
+   correct:1,
+   explanation:'Encryption scrambles data using an algorithm and key. It doesn\'t prevent interception but makes intercepted data unreadable.'},
+
+  {id:'os4', topic:'os', type:'mcq', difficulty:'Foundation',
+   q:'What is the purpose of UTILITY SOFTWARE?',
+   marks:1,
+   options:['To run games and media','To perform housekeeping tasks and help maintain/monitor the computer','To write new software applications','To manage internet connections'],
+   correct:1,
+   explanation:'Utility software performs maintenance tasks — e.g. defragmentation, antivirus, disk cleanup — to keep the computer running smoothly.'},
+
+  // ETHICS
+  {id:'e1', topic:'ethics', type:'mcq', difficulty:'Higher',
+   q:'A shopping centre installs facial recognition CCTV. Which is a valid PRIVACY concern?',
+   marks:2,
+   options:['The cameras cost too much to install','People may be unaware they are being tracked and have not given consent','The system might not recognise all faces','The cameras use too much electricity'],
+   correct:1,
+   explanation:'Facial recognition tracks individuals without explicit consent — a privacy issue. People may not know the system exists or how data is used.'},
+
+  {id:'e2', topic:'ethics', type:'mcq', difficulty:'Higher',
+   q:'Which is a benefit of OPEN SOURCE software for USERS (not developers)?',
+   marks:2,
+   options:['Developers can earn more money','Users can view and modify the source code to suit their needs','The software is always better quality','There is no copyright on open source software'],
+   correct:1,
+   explanation:'Open source allows users to read, modify and redistribute code — they can tailor it to their needs and fix bugs themselves.'},
+
+  {id:'e3', topic:'ethics', type:'mcq', difficulty:'Higher',
+   q:'A LEGAL issue with AI monitoring social media posts could be:',
+   marks:2,
+   options:['The AI uses electricity','The AI might breach the Data Protection Act (2018) by mishandling personal data','The AI is too expensive','Users enjoy using social media'],
+   correct:1,
+   explanation:'AI must comply with the DPA 2018 — it must handle personal data lawfully, tell users how data is used, and keep it secure.'},
+
+  {id:'e4', topic:'ethics', type:'mcq', difficulty:'Higher',
+   q:'Which is a BENEFIT of PROPRIETARY software for the programmer?',
+   marks:2,
+   options:['Anyone can edit and improve the code','The programmer can earn money through selling licences','Users can redistribute the software freely','Source code is freely available to all'],
+   correct:1,
+   explanation:'Proprietary software is sold under licence — the programmer controls distribution and earns revenue. Source code is kept private.'},
+
+  // EMBEDDED
+  {id:'em1', topic:'embedded', type:'mcq', difficulty:'Foundation',
+   q:'Which of the following is the BEST definition of an embedded system?',
+   marks:2,
+   options:['A general-purpose computer inside a phone','A dedicated microprocessor with fixed software built into a larger device to perform a specific task','Any computer without a screen','A computer that is embedded in a desk'],
+   correct:1,
+   explanation:'Embedded systems have a dedicated microprocessor, specific/limited function, and built-in software (firmware). They are part of a larger device.'},
+
+  {id:'em2', topic:'embedded', type:'mcq', difficulty:'Foundation',
+   q:'In an embedded system\'s ROM, which items would be stored?',
+   marks:2,
+   options:['The current distance from a sensor','The firmware/start-up instructions for the system','Temporary processing data','The driver\'s last input'],
+   correct:1,
+   explanation:'ROM in an embedded system holds firmware — the permanent instructions that define how the system operates. This doesn\'t change when power is off.'},
+
+  {id:'em3', topic:'embedded', type:'mcq', difficulty:'Higher',
+   q:'Why does the "Follow Me" cruise control embedded system NOT need virtual memory?',
+   marks:2,
+   options:['It has no internet connection','It only runs one dedicated program with limited data, so RAM is never full','It uses optical storage','Virtual memory is only for gaming systems'],
+   correct:1,
+   explanation:'Embedded systems run one specific program with predictable, small data needs. RAM is always sufficient so virtual memory is unnecessary.'},
+
+  {id:'em4', topic:'embedded', type:'mcq', difficulty:'Foundation',
+   q:'Which of these would be stored in RAM of the "Follow Me" cruise control system?',
+   marks:2,
+   options:['The start-up firmware','The maximum operating speed (fixed setting)','Current speed of the vehicle and current distance from the car in front','The manufacturer\'s copyright notice'],
+   correct:2,
+   explanation:'RAM stores current/active data: current speed, current distance from the car ahead, sensor readings — data that changes constantly.'},
+];
+
+// ===== STATE =====
+let state = {
+  session: parseInt(localStorage.getItem('qz_session') || '1'),
+  totalAnswered: parseInt(localStorage.getItem('qz_total') || '0'),
+  streak: 0,
+  bestStreak: 0,
+  performance: JSON.parse(localStorage.getItem('qz_perf') || 'null') || buildDefaultPerf(),
+  quizHistory: JSON.parse(localStorage.getItem('qz_history') || '[]'),
+};
+
+function buildDefaultPerf() {
+  const p = {};
+  Object.keys(TOPICS).forEach(t => { p[t] = { correct: 0, total: 0, lastScore: 0 }; });
+  return p;
+}
+
+function saveState() {
+  localStorage.setItem('qz_session', state.session);
+  localStorage.setItem('qz_total', state.totalAnswered);
+  localStorage.setItem('qz_perf', JSON.stringify(state.performance));
+  localStorage.setItem('qz_history', JSON.stringify(state.quizHistory.slice(-20)));
+}
+
+// ===== QUIZ ENGINE =====
+let quiz = { questions: [], current: 0, answers: [], topicScores: {}, streak: 0, bestStreak: 0 };
+
+function getTopicMastery(topic) {
+  const p = state.performance[topic];
+  if (!p || p.total === 0) return 0;
+  return p.correct / p.total;
+}
+
+function selectQuestions(mode, count = 12) {
+  let pool = [...QUESTIONS];
+  if (mode === 'weak') {
+    const weakTopics = Object.keys(TOPICS).filter(t => getTopicMastery(t) < 0.6);
+    pool = pool.filter(q => weakTopics.includes(q.topic));
+    if (pool.length < 5) pool = [...QUESTIONS];
+  }
+  if (mode === 'adaptive') {
+    // Weight questions by weakness — weak topics more likely
+    pool = pool.sort(() => {
+      return Math.random() - 0.5;
+    });
+    // Bias toward weak topics
+    pool.sort((a, b) => {
+      const wa = 1 - getTopicMastery(a.topic);
+      const wb = 1 - getTopicMastery(b.topic);
+      return (wb - wa) * 0.6 + (Math.random() - 0.5) * 0.4;
+    });
+  } else {
+    pool.sort(() => Math.random() - 0.5);
+  }
+  return pool.slice(0, Math.min(count, pool.length));
+}
+
+function startQuiz(mode) {
+  quiz = { questions: selectQuestions(mode), current: 0, answers: [], topicScores: {}, streak: 0, bestStreak: 0, locked: false };
+  Object.keys(TOPICS).forEach(t => { quiz.topicScores[t] = { correct: 0, total: 0 }; });
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quiz.questions[quiz.current];
+  const total = quiz.questions.length;
+  const idx = quiz.current;
+
+  document.getElementById('q-topic-tag').textContent = TOPICS[q.topic];
+  document.getElementById('q-count').textContent = `${idx + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = `${(idx / total) * 100}%`;
+  document.getElementById('q-difficulty').textContent = q.difficulty;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-marks').textContent = `[${q.marks} mark${q.marks > 1 ? 's' : ''}]`;
+
+  const optContainer = document.getElementById('options-container');
+  const inputEl = document.getElementById('q-input');
+  const revealEl = document.getElementById('answer-reveal');
+  const selfMark = document.getElementById('self-mark');
+  const feedbackBar = document.getElementById('feedback-bar');
+
+  revealEl.classList.remove('show');
+  selfMark.classList.remove('show');
+  feedbackBar.classList.remove('show');
+  document.getElementById('btn-reveal').style.display = '';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('btn-finish').style.display = 'none';
+
+  quiz.locked = false;
+
+  if (q.type === 'mcq') {
+    inputEl.style.display = 'none';
+    optContainer.style.display = 'flex';
+    optContainer.innerHTML = '';
+    const letters = ['A','B','C','D'];
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+      btn.onclick = () => selectOption(i);
+      optContainer.appendChild(btn);
+    });
+  } else {
+    optContainer.style.display = 'none';
+    inputEl.style.display = 'block';
+    inputEl.value = '';
+    inputEl.focus();
+  }
+}
+
+function selectOption(idx) {
+  if (quiz.locked) return;
+  quiz.locked = true;
+  const q = quiz.questions[quiz.current];
+  const opts = document.querySelectorAll('.opt');
+  const correct = q.correct === idx;
+
+  opts.forEach((opt, i) => {
+    opt.classList.add('locked');
+    if (i === idx) opt.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct && i === q.correct) opt.classList.add('reveal-correct');
+  });
+
+  recordAnswer(correct ? 1 : 0, q);
+  showFeedback(correct, q.explanation);
+  showNextButton();
+}
+
+function revealAnswer() {
+  const q = quiz.questions[quiz.current];
+  document.getElementById('reveal-text').innerHTML = `<ul><li>${q.explanation}</li></ul>`;
+  document.getElementById('answer-reveal').classList.add('show');
+  document.getElementById('btn-reveal').style.display = 'none';
+  if (q.type !== 'mcq') {
+    document.getElementById('self-mark').classList.add('show');
+  } else if (!quiz.locked) {
+    quiz.locked = true;
+    recordAnswer(0, q);
+    showNextButton();
+  }
+}
+
+function selfMark(score) {
+  const q = quiz.questions[quiz.current];
+  document.getElementById('self-mark').classList.remove('show');
+  recordAnswer(score, q);
+  showFeedback(score >= 0.5, q.explanation);
+  showNextButton();
+}
+
+function recordAnswer(score, q) {
+  quiz.answers.push({ qid: q.id, topic: q.topic, score });
+  if (!quiz.topicScores[q.topic]) quiz.topicScores[q.topic] = { correct: 0, total: 0 };
+  quiz.topicScores[q.topic].total++;
+  quiz.topicScores[q.topic].correct += score;
+
+  if (score >= 0.5) {
+    quiz.streak++;
+    quiz.bestStreak = Math.max(quiz.bestStreak, quiz.streak);
+    state.streak++;
+    state.bestStreak = Math.max(state.bestStreak || 0, state.streak);
+  } else {
+    quiz.streak = 0;
+    state.streak = 0;
+  }
+  state.totalAnswered++;
+  updateHeader();
+}
+
+function showFeedback(correct, explanation) {
+  const bar = document.getElementById('feedback-bar');
+  bar.classList.add('show');
+  bar.style.borderColor = correct ? 'rgba(62,207,142,0.3)' : 'rgba(248,113,113,0.3)';
+  bar.style.background = correct ? 'rgba(62,207,142,0.05)' : 'rgba(248,113,113,0.05)';
+  document.getElementById('feedback-icon').textContent = correct ? '✓' : '✗';
+  document.getElementById('feedback-icon').style.color = correct ? 'var(--green)' : 'var(--red)';
+  document.getElementById('feedback-head').textContent = correct ? 'Correct!' : 'Not quite.';
+  document.getElementById('feedback-head').style.color = correct ? 'var(--green)' : 'var(--red)';
+  document.getElementById('feedback-body').textContent = explanation;
+}
+
+function showNextButton() {
+  const isLast = quiz.current === quiz.questions.length - 1;
+  document.getElementById('btn-next').style.display = isLast ? 'none' : '';
+  document.getElementById('btn-finish').style.display = isLast ? '' : 'none';
+}
+
+function nextQuestion() {
+  quiz.current++;
+  renderQuestion();
+}
+
+function showResults() {
+  // Update persistent performance
+  Object.entries(quiz.topicScores).forEach(([t, s]) => {
+    if (s.total > 0) {
+      state.performance[t].total += s.total;
+      state.performance[t].correct += s.correct;
+      state.performance[t].lastScore = s.total > 0 ? s.correct / s.total : null;
+    }
+  });
+  state.session++;
+
+  const totalCorrect = quiz.answers.reduce((a, b) => a + b.score, 0);
+  const totalQ = quiz.answers.length;
+  const pct = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0;
+
+  state.quizHistory.push({ session: state.session, pct, date: Date.now() });
+  saveState();
+
+  // Grade
+  let grade, gradeColor;
+  if (pct >= 90) { grade = '9'; gradeColor = 'var(--green)'; }
+  else if (pct >= 80) { grade = '8'; gradeColor = 'var(--green)'; }
+  else if (pct >= 70) { grade = '7'; gradeColor = '#4ade80'; }
+  else if (pct >= 60) { grade = '6'; gradeColor = 'var(--accent2)'; }
+  else if (pct >= 50) { grade = '5'; gradeColor = 'var(--accent)'; }
+  else if (pct >= 40) { grade = '4'; gradeColor = 'var(--amber)'; }
+  else if (pct >= 30) { grade = '3'; gradeColor = '#fb923c'; }
+  else if (pct >= 20) { grade = '2'; gradeColor = 'var(--red)'; }
+  else { grade = '1'; gradeColor = 'var(--red)'; }
+
+  const headlines = {
+    '9': 'Outstanding! Near-perfect performance.',
+    '8': 'Excellent work — nearly there!',
+    '7': 'Great result — well above average.',
+    '6': 'Good performance — a solid pass.',
+    '5': 'Decent effort — room to grow.',
+    '4': 'A borderline pass — keep practising.',
+    '3': 'Below standard — focus on weak areas.',
+    '2': 'Needs significant work — revise and retry.',
+    '1': 'Keep going — every attempt builds knowledge.',
+  };
+
+  const badge = document.getElementById('grade-badge');
+  badge.textContent = grade;
+  badge.style.borderColor = gradeColor;
+  badge.style.color = gradeColor;
+
+  document.getElementById('results-headline').textContent = headlines[grade];
+  document.getElementById('results-sub').textContent = `Session ${state.session - 1} complete`;
+  document.getElementById('r-score').textContent = `${Math.round(totalCorrect)}/${totalQ}`;
+  document.getElementById('r-pct').textContent = `${pct}%`;
+  document.getElementById('r-streak').textContent = quiz.bestStreak;
+  document.getElementById('r-score').style.color = gradeColor;
+  document.getElementById('r-pct').style.color = gradeColor;
+
+  // Topic breakdown
+  const breakdown = document.getElementById('topic-breakdown');
+  breakdown.innerHTML = '';
+  const quizTopics = [...new Set(quiz.questions.map(q => q.topic))];
+  quizTopics.forEach(t => {
+    const s = quiz.topicScores[t];
+    if (!s || s.total === 0) return;
+    const tpct = Math.round((s.correct / s.total) * 100);
+    const color = tpct >= 70 ? 'var(--green)' : tpct >= 50 ? 'var(--amber)' : 'var(--red)';
+    const row = document.createElement('div');
+    row.className = 'topic-result';
+    row.innerHTML = `
+      <div class="topic-result-name">${TOPICS[t]}</div>
+      <div class="topic-result-bar"><div class="topic-result-fill" style="width:${tpct}%;background:${color}"></div></div>
+      <div class="topic-result-pct" style="color:${color}">${tpct}%</div>`;
+    breakdown.appendChild(row);
+  });
+
+  // Weak areas notice
+  const weakTopics = Object.entries(state.performance)
+    .filter(([t, p]) => p.total >= 2 && p.correct / p.total < 0.55)
+    .map(([t]) => TOPICS[t]);
+  const weakNotice = document.getElementById('weak-notice');
+  if (weakTopics.length > 0) {
+    weakNotice.style.display = '';
+    document.getElementById('weak-notice-text').textContent =
+      `Based on your history, focus on: ${weakTopics.join(', ')}. Use "Drill Weak Areas" to target these specifically.`;
+  } else {
+    weakNotice.style.display = 'none';
+  }
+
+  showScreen('screen-results');
+}
+
+// ===== HOME / MASTERY =====
+function renderTopicGrid() {
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = '';
+  Object.entries(TOPICS).forEach(([key, name]) => {
+    const p = state.performance[key];
+    const mastery = p.total > 0 ? p.correct / p.total : null;
+    const pct = mastery !== null ? Math.round(mastery * 100) : 0;
+    const color = mastery === null ? '#555' : mastery >= 0.75 ? 'var(--green)' : mastery >= 0.5 ? 'var(--amber)' : 'var(--red)';
+    const cls = mastery === null ? '' : mastery >= 0.7 ? 'strong' : mastery < 0.5 && p.total > 0 ? 'weak' : '';
+    const card = document.createElement('div');
+    card.className = `topic-card ${cls}`;
+    card.innerHTML = `
+      <div class="topic-name">${name}</div>
+      <div class="topic-bar"><div class="topic-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="topic-meta">${p.total > 0 ? `${pct}% · ${p.total} answered` : 'Not attempted'}</div>`;
+    card.onclick = () => startQuiz('all');
+    grid.appendChild(card);
+  });
+}
+
+function renderMastery() {
+  const grid = document.getElementById('mastery-grid');
+  grid.innerHTML = '';
+  Object.entries(TOPICS).forEach(([key, name]) => {
+    const p = state.performance[key];
+    const mastery = p.total > 0 ? p.correct / p.total : 0;
+    const pct = Math.round(mastery * 100);
+    const color = mastery >= 0.8 ? 'var(--green)' : mastery >= 0.55 ? 'var(--amber)' : 'var(--red)';
+    const stars = mastery >= 0.85 ? '★★★' : mastery >= 0.65 ? '★★☆' : mastery >= 0.4 ? '★☆☆' : '☆☆☆';
+    const row = document.createElement('div');
+    row.className = 'mastery-row';
+    row.innerHTML = `
+      <div class="mastery-topic">
+        <div class="mastery-name">${name}</div>
+        <div class="mastery-sub">${p.total} answered · ${p.total > 0 ? `${Math.round(p.correct)} correct` : 'not started'}</div>
+      </div>
+      <div class="mastery-bar"><div class="mastery-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="mastery-stars ${mastery >= 0.85 ? 'mastered' : ''}">${stars}</div>`;
+    grid.appendChild(row);
+  });
+}
+
+function showSection(name) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('section-topics').style.display = name === 'topics' ? '' : 'none';
+  document.getElementById('section-mastery').style.display = name === 'mastery' ? '' : 'none';
+  if (name === 'mastery') renderMastery();
+}
+
+function updateHeader() {
+  document.getElementById('hdr-session').textContent = state.session;
+  document.getElementById('hdr-total').textContent = state.totalAnswered;
+  document.getElementById('hdr-streak').textContent = state.streak;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  renderTopicGrid();
+  showScreen('screen-home');
+}
+
+// Init
+updateHeader();
+renderTopicGrid();
+</script>
+</body>
+</html>
