@@ -21,21 +21,21 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; line-height: 1.6; }
   #app { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
-
+ 
   .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; padding-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); }
   .logo { font-family: var(--mono); font-size: 13px; color: var(--accent2); letter-spacing: 0.05em; }
   .logo span { color: var(--text3); }
   .stats-pill { display: flex; gap: 1.5rem; font-size: 13px; font-family: var(--mono); color: var(--text3); }
   .stats-pill b { color: var(--text2); font-weight: 400; }
-
+ 
   .screen { display: none; }
   .screen.active { display: block; }
-
+ 
   .hero { text-align: center; padding: 3rem 0 2rem; }
   .hero h1 { font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem; }
   .hero h1 em { font-style: normal; color: var(--accent2); }
   .hero p { color: var(--text2); font-size: 1rem; max-width: 480px; margin: 0 auto 2.5rem; }
-
+ 
   .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 2rem; }
   .topic-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
   .topic-card:hover { border-color: var(--border2); }
@@ -45,7 +45,7 @@
   .topic-bar { height: 3px; background: var(--surface3); border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
   .topic-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
   .topic-meta { font-size: 12px; color: var(--text3); font-family: var(--mono); }
-
+ 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.7rem 1.6rem; border-radius: var(--radius); border: none; cursor: pointer; font-family: var(--sans); font-size: 15px; font-weight: 500; transition: all 0.15s; }
   .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: #9585fa; }
@@ -53,22 +53,22 @@
   .btn-ghost:hover { background: var(--surface3); color: var(--text); }
   .btn-lg { padding: 0.9rem 2.2rem; font-size: 16px; }
   .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
-
+ 
   .nav { display: flex; gap: 8px; margin-bottom: 2rem; }
   .nav-btn { font-size: 13px; padding: 0.4rem 0.9rem; border-radius: 99px; border: 0.5px solid var(--border); background: transparent; color: var(--text3); cursor: pointer; font-family: var(--sans); transition: all 0.15s; }
   .nav-btn.active, .nav-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
-
+ 
   .quiz-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
   .progress-track { flex: 1; height: 4px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
   .q-count { font-family: var(--mono); font-size: 13px; color: var(--text3); white-space: nowrap; }
   .topic-tag { font-size: 12px; font-family: var(--mono); background: var(--accent-bg); color: var(--accent2); padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
-
+ 
   .q-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.25rem; }
   .q-difficulty { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-bottom: 0.75rem; }
   .q-text { font-size: 1.05rem; font-weight: 400; line-height: 1.65; color: var(--text); margin-bottom: 1rem; }
   .q-marks { font-size: 12px; color: var(--accent2); font-family: var(--mono); margin-bottom: 1.25rem; }
-
+ 
   .options { display: flex; flex-direction: column; gap: 10px; }
   .opt { background: var(--opt-bg); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.85rem 1.1rem; cursor: pointer; font-size: 15px; text-align: left; transition: all 0.15s; display: flex; align-items: flex-start; gap: 10px; color: var(--text); }
   .opt:hover:not(.locked) { border-color: var(--accent); background: var(--accent-bg); }
@@ -77,12 +77,12 @@
   .opt.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
   .opt.reveal-correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
   .opt-letter { font-family: var(--mono); font-size: 12px; min-width: 22px; height: 22px; border-radius: 6px; background: rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; color: var(--text3); }
-
+ 
   .answer-reveal { background: var(--opt-bg); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-top: 1rem; display: none; }
   .answer-reveal.show { display: block; }
   .reveal-label { font-size: 12px; color: var(--text3); font-family: var(--mono); margin-bottom: 0.5rem; }
   .reveal-text { font-size: 14px; color: var(--text2); line-height: 1.6; }
-
+ 
   .ai-explanation { background: linear-gradient(135deg, rgba(124,108,248,0.08), rgba(124,108,248,0.04)); border: 0.5px solid rgba(124,108,248,0.25); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-top: 10px; display: none; }
   .ai-explanation.show { display: block; }
   .ai-exp-label { font-size: 11px; color: var(--accent2); font-family: var(--mono); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
@@ -93,29 +93,29 @@
   .ai-thinking span:nth-child(2) { animation-delay: 0.2s; }
   .ai-thinking span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
-
+ 
   .self-mark { display: none; gap: 10px; margin-top: 1rem; }
   .self-mark.show { display: flex; }
   .self-mark p { font-size: 14px; color: var(--text2); margin-bottom: 8px; width: 100%; }
-
+ 
   .feedback-bar { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; display: none; }
   .feedback-bar.show { display: flex; align-items: flex-start; gap: 12px; }
   .feedback-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
   .feedback-text { font-size: 14px; color: var(--text2); }
   .feedback-text strong { display: block; margin-bottom: 4px; }
-
+ 
   .action-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 0.75rem; flex-wrap: wrap; }
-
+ 
   .results-hero { text-align: center; padding: 2rem 0 1.5rem; }
   .grade-badge { display: inline-flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 50%; font-family: var(--mono); font-size: 3rem; font-weight: 700; margin-bottom: 1.5rem; border: 2px solid; }
   .results-hero h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.5rem; }
   .results-hero p { color: var(--text2); }
-
+ 
   .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1.5rem 0; }
   .score-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem; text-align: center; }
   .score-val { font-size: 2rem; font-weight: 600; font-family: var(--mono); }
   .score-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
-
+ 
   /* GRADE BOUNDARY TABLE */
   .grade-table-wrap { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin: 1.5rem 0; }
   .grade-table-wrap h3 { font-size: 15px; font-weight: 500; margin-bottom: 12px; }
@@ -126,7 +126,7 @@
   .grade-table td:first-child { font-weight: 700; }
   .grade-table tr.highlight td { background: rgba(124,108,248,0.12); color: var(--accent2); }
   .grade-table tr.highlight td:first-child { color: var(--accent2); }
-
+ 
   .breakdown { margin: 1.5rem 0; }
   .breakdown h3 { font-size: 15px; font-weight: 500; margin-bottom: 1rem; }
   .topic-result { display: flex; align-items: center; gap: 12px; padding: 0.75rem 0; border-bottom: 0.5px solid var(--border); }
@@ -134,11 +134,11 @@
   .topic-result-bar { width: 120px; height: 6px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
   .topic-result-fill { height: 100%; border-radius: 99px; }
   .topic-result-pct { font-family: var(--mono); font-size: 13px; min-width: 40px; text-align: right; }
-
+ 
   .weak-notice { background: rgba(248,113,113,0.07); border: 0.5px solid rgba(248,113,113,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1.5rem 0; }
   .weak-notice h4 { font-size: 14px; font-weight: 500; color: var(--red); margin-bottom: 6px; }
   .weak-notice p { font-size: 13px; color: var(--text2); }
-
+ 
   .mastery-screen { padding-top: 1rem; }
   .mastery-grid { display: flex; flex-direction: column; gap: 10px; }
   .mastery-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 14px; animation: fadeIn 0.25s ease; }
@@ -149,10 +149,10 @@
   .mastery-fill { height: 100%; border-radius: 99px; transition: width 0.5s; }
   .mastery-stars { font-family: var(--mono); font-size: 14px; color: var(--text3); min-width: 48px; text-align: right; }
   .mastered { color: var(--green); }
-
+ 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   .q-card, .results-hero, .mastery-row { animation: fadeIn 0.25s ease; }
-
+ 
   /* ── CHATBOT ── */
   #chat-fab { position: fixed; bottom: 28px; right: 28px; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 20px rgba(124,108,248,0.4); z-index: 1000; transition: transform 0.2s; }
   #chat-fab:hover { transform: scale(1.08); }
@@ -179,7 +179,7 @@
   .chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 1rem 0.75rem; }
   .chat-pill { background: var(--surface3); border: 0.5px solid var(--border2); border-radius: 99px; padding: 4px 10px; font-size: 12px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
   .chat-pill:hover { background: var(--accent-bg); color: var(--accent2); border-color: var(--accent); }
-
+ 
   @media (max-width: 540px) {
     .score-grid { grid-template-columns: 1fr 1fr; }
     .topic-result-bar { width: 70px; }
@@ -200,7 +200,7 @@
       <span>Streak <b id="hdr-streak">0</b></span>
     </div>
   </div>
-
+ 
   <!-- HOME -->
   <div class="screen active" id="screen-home">
     <div class="hero">
@@ -245,7 +245,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- QUIZ -->
   <div class="screen" id="screen-quiz">
     <div class="quiz-header">
@@ -289,7 +289,7 @@
       <button class="btn btn-primary" id="btn-finish" onclick="showResults()" style="display:none">See Results →</button>
     </div>
   </div>
-
+ 
   <!-- RESULTS -->
   <div class="screen" id="screen-results">
     <div class="results-hero">
@@ -318,7 +318,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- CHATBOT FAB -->
 <button id="chat-fab" onclick="toggleChat()" title="Ask AI Tutor">🤖</button>
 <div id="chat-window">
@@ -344,7 +344,7 @@
     <button class="chat-send" onclick="sendChat()">➤</button>
   </div>
 </div>
-
+ 
 <script>
 // ═══════════════════════════════════════════════════
 // GRADE BOUNDARIES (OCR J277/01 — 2022, 2023, 2024)
@@ -361,23 +361,23 @@ const GRADE_BOUNDARIES = [
   {grade:'1', avg:8,  y2022:9,  y2023:7,  y2024:7},
   {grade:'U', avg:0,  y2022:0,  y2023:0,  y2024:0},
 ];
-
+ 
 // Maps percentage score (out of quiz marks) to estimated raw mark (out of 80)
 function estimateGrade(pct) {
   const raw = Math.round(pct * 80 / 100);
   for (const b of GRADE_BOUNDARIES) { if (raw >= b.avg) return {grade: b.grade, raw}; }
   return {grade:'U', raw};
 }
-
+ 
 const GRADE_COLORS = {'9':'var(--green)','8':'var(--green)','7':'#4ade80','6':'var(--accent2)','5':'var(--accent)','4':'var(--amber)','3':'#fb923c','2':'var(--red)','1':'var(--red)','U':'var(--red)'};
 const GRADE_MSGS = {'9':'Outstanding — near-perfect performance!','8':'Excellent work — nearly there!','7':'Great result — well above average.','6':'Good performance — solid pass.','5':'Decent effort — keep pushing.','4':'Borderline pass — more practice needed.','3':'Below standard — target weak areas.','2':'Significant work needed — revise and retry.','1':'Keep going — every attempt builds knowledge.','U':'Don\'t give up — try again!'};
-
+ 
 const TOPICS = {
   binary:'Binary & Data Representation', cpu:'CPU & Fetch-Execute Cycle', networks:'Networks & Protocols',
   security:'Security & Legislation', storage:'Storage & Memory', sound:'Sound & Compression',
   images:'Images & Colour', os:'Operating Systems & Utility Software', ethics:'Ethics, Legal & Privacy Issues', embedded:'Embedded Systems'
 };
-
+ 
 const QUESTIONS = [
   {id:'b1',topic:'binary',type:'mcq',difficulty:'Foundation',q:'How many unique values can be represented using 4 bits?',marks:1,options:['8','12','16','32'],correct:2,explanation:'2⁴ = 16 unique values (0–15).'},
   {id:'b2',topic:'binary',type:'mcq',difficulty:'Foundation',q:'Convert denary 221 into 8-bit binary.',marks:2,options:['11011011','11011101','11101101','10111101'],correct:1,explanation:'128+64+16+8+4+1 = 221 → 11011101'},
@@ -485,7 +485,7 @@ const QUESTIONS = [
   {id:'em5',topic:'embedded',type:'mcq',difficulty:'Foundation',q:'Which is an example of an embedded system in a car?',marks:1,options:['A USB stick in the dashboard','The engine management system that monitors and adjusts fuel injection','A general-purpose laptop on the back seat','A portable GPS suction-cupped to the windscreen'],correct:1,explanation:'The engine management system is a dedicated embedded system — specific purpose, own microprocessor, built into the car.'},
   {id:'em6',topic:'embedded',type:'mcq',difficulty:'Higher',q:'Why is it HARD TO CHANGE the function of an embedded system?',marks:2,options:['They are always connected to the internet','Software is stored in ROM/firmware and hardware is purpose-built for one specific task','They use too much RAM to be reprogrammed','They have no operating system at all'],correct:1,explanation:'Firmware is in ROM and hardware is purpose-designed — the system cannot easily be reprogrammed to run other software.'},
 ];
-
+ 
 // ═══════════════════════════════════════════════
 // STATE & PERSISTENCE
 // ═══════════════════════════════════════════════
@@ -498,10 +498,10 @@ let state = {
 };
 function buildDefaultPerf(){const p={};Object.keys(TOPICS).forEach(t=>{p[t]={correct:0,total:0}});return p;}
 function saveState(){localStorage.setItem('qz_session',state.session);localStorage.setItem('qz_total',state.totalAnswered);localStorage.setItem('qz_perf',JSON.stringify(state.performance));localStorage.setItem('qz_history',JSON.stringify(state.quizHistory.slice(-20)));}
-
+ 
 let quiz = {questions:[],current:0,answers:[],topicScores:{},streak:0,bestStreak:0,locked:false};
 function getTopicMastery(t){const p=state.performance[t];return(!p||p.total===0)?0:p.correct/p.total;}
-
+ 
 // ═══════════════════════════════════════════════
 // QUIZ ENGINE
 // ═══════════════════════════════════════════════
@@ -512,13 +512,13 @@ function selectQuestions(mode, count=14){
   else{pool.sort(()=>Math.random()-0.5);}
   return pool.slice(0,Math.min(count,pool.length));
 }
-
+ 
 function startQuiz(mode){
   quiz={questions:selectQuestions(mode),current:0,answers:[],topicScores:{},streak:0,bestStreak:0,locked:false};
   Object.keys(TOPICS).forEach(t=>{quiz.topicScores[t]={correct:0,total:0}});
   showScreen('screen-quiz');renderQuestion();
 }
-
+ 
 function renderQuestion(){
   const q=quiz.questions[quiz.current],total=quiz.questions.length,idx=quiz.current;
   document.getElementById('q-topic-tag').textContent=TOPICS[q.topic];
@@ -543,7 +543,7 @@ function renderQuestion(){
     b.onclick=()=>selectOption(i);optC.appendChild(b);
   });
 }
-
+ 
 function selectOption(idx){
   if(quiz.locked)return;quiz.locked=true;
   const q=quiz.questions[quiz.current],opts=document.querySelectorAll('.opt'),correct=q.correct===idx;
@@ -551,19 +551,19 @@ function selectOption(idx){
   recordAnswer(correct?1:0,q);showFeedback(correct,q.explanation);
   showMarkScheme(q);getAIExplanation(q,correct);showNextButton();
 }
-
+ 
 function revealAnswer(){
   const q=quiz.questions[quiz.current];
   showMarkScheme(q);
   document.getElementById('btn-reveal').style.display='none';
   if(!quiz.locked){quiz.locked=true;recordAnswer(0,q);showFeedback(false,q.explanation);getAIExplanation(q,false);showNextButton();}
 }
-
+ 
 function showMarkScheme(q){
   document.getElementById('reveal-text').innerHTML=`<p>${q.explanation}</p>`;
   document.getElementById('answer-reveal').classList.add('show');
 }
-
+ 
 async function getAIExplanation(q, wasCorrect){
   const box=document.getElementById('ai-explanation'),txt=document.getElementById('ai-exp-text');
   box.classList.add('show');
@@ -576,13 +576,13 @@ async function getAIExplanation(q, wasCorrect){
     txt.textContent=resp;
   }catch(e){txt.textContent=q.explanation+' (AI explanation unavailable offline.)';}
 }
-
+ 
 function selfMark(score){
   const q=quiz.questions[quiz.current];
   document.getElementById('self-mark').classList.remove('show');
   recordAnswer(score,q);showFeedback(score>=0.5,q.explanation);showNextButton();
 }
-
+ 
 function recordAnswer(score,q){
   quiz.answers.push({qid:q.id,topic:q.topic,score});
   if(!quiz.topicScores[q.topic])quiz.topicScores[q.topic]={correct:0,total:0};
@@ -591,7 +591,7 @@ function recordAnswer(score,q){
   else{quiz.streak=0;state.streak=0;}
   state.totalAnswered++;updateHeader();
 }
-
+ 
 function showFeedback(correct,explanation){
   const bar=document.getElementById('feedback-bar');bar.classList.add('show');
   bar.style.borderColor=correct?'rgba(34,201,122,0.3)':'rgba(248,113,113,0.3)';
@@ -602,14 +602,14 @@ function showFeedback(correct,explanation){
   document.getElementById('feedback-head').style.color=correct?'var(--green)':'var(--red)';
   document.getElementById('feedback-body').textContent=' '+explanation;
 }
-
+ 
 function showNextButton(){
   const isLast=quiz.current===quiz.questions.length-1;
   document.getElementById('btn-next').style.display=isLast?'none':'';
   document.getElementById('btn-finish').style.display=isLast?'':'none';
 }
 function nextQuestion(){quiz.current++;renderQuestion();}
-
+ 
 // ═══════════════════════════════════════════════
 // RESULTS + GRADE BOUNDARIES
 // ═══════════════════════════════════════════════
@@ -621,10 +621,10 @@ function showResults(){
   const totalCorrect=quiz.answers.reduce((a,b)=>a+b.score,0),totalQ=quiz.answers.length;
   const pct=totalQ>0?Math.round((totalCorrect/totalQ)*100):0;
   state.quizHistory.push({session:state.session,pct,date:Date.now()});saveState();
-
+ 
   const {grade,raw}=estimateGrade(pct);
   const color=GRADE_COLORS[grade];
-
+ 
   const badge=document.getElementById('grade-badge');badge.textContent=grade;badge.style.borderColor=color;badge.style.color=color;
   document.getElementById('results-headline').textContent=GRADE_MSGS[grade];
   document.getElementById('results-sub').textContent=`Session ${state.session-1} complete · Estimated raw mark: ${raw}/80`;
@@ -633,7 +633,7 @@ function showResults(){
   document.getElementById('r-streak').textContent=quiz.bestStreak;
   document.getElementById('r-score').style.color=color;
   document.getElementById('r-pct').style.color=color;
-
+ 
   // Grade boundary table in results
   const tbody=document.getElementById('results-grade-body');tbody.innerHTML='';
   GRADE_BOUNDARIES.forEach(b=>{
@@ -643,7 +643,7 @@ function showResults(){
     tr.innerHTML=`<td>${b.grade}</td><td>${b.avg}</td><td>${raw}</td><td style="color:${achieved?'var(--green)':'var(--text3)'}">${achieved?'✓ Achieved':(b.grade==='U'?'—':`${next} more needed`)}</td>`;
     tbody.appendChild(tr);
   });
-
+ 
   const breakdown=document.getElementById('topic-breakdown');breakdown.innerHTML='';
   [...new Set(quiz.questions.map(q=>q.topic))].forEach(t=>{
     const s=quiz.topicScores[t];if(!s||s.total===0)return;
@@ -652,14 +652,14 @@ function showResults(){
     row.innerHTML=`<div class="topic-result-name">${TOPICS[t]}</div><div class="topic-result-bar"><div class="topic-result-fill" style="width:${tp}%;background:${col}"></div></div><div class="topic-result-pct" style="color:${col}">${tp}%</div>`;
     breakdown.appendChild(row);
   });
-
+ 
   const wt=Object.entries(state.performance).filter(([t,p])=>p.total>=2&&p.correct/p.total<0.55).map(([t])=>TOPICS[t]);
   const wn=document.getElementById('weak-notice');
   if(wt.length>0){wn.style.display='';document.getElementById('weak-notice-text').textContent=`Focus on: ${wt.join(', ')}. Use "Drill Weak Areas" to target these next.`;}
   else{wn.style.display='none';}
   showScreen('screen-results');
 }
-
+ 
 // ═══════════════════════════════════════════════
 // HOME / NAV / MASTERY
 // ═══════════════════════════════════════════════
@@ -674,7 +674,7 @@ function renderTopicGrid(){
     card.onclick=()=>startQuiz('all');grid.appendChild(card);
   });
 }
-
+ 
 function renderMastery(){
   const grid=document.getElementById('mastery-grid');grid.innerHTML='';
   Object.entries(TOPICS).forEach(([key,name])=>{
@@ -686,7 +686,7 @@ function renderMastery(){
     grid.appendChild(row);
   });
 }
-
+ 
 function showSection(name,e){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(e&&e.target)e.target.classList.add('active');
@@ -695,44 +695,44 @@ function showSection(name,e){
   document.getElementById('section-grades').style.display=name==='grades'?'':'none';
   if(name==='mastery')renderMastery();
 }
-
+ 
 function updateHeader(){document.getElementById('hdr-session').textContent=state.session;document.getElementById('hdr-total').textContent=state.totalAnswered;document.getElementById('hdr-streak').textContent=state.streak;}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 function goHome(){renderTopicGrid();showScreen('screen-home');}
-
+ 
 // ═══════════════════════════════════════════════
 // AI CHATBOT
 // ═══════════════════════════════════════════════
 let chatOpen=false;
 let chatHistory=[];
-
+ 
 function toggleChat(){
   chatOpen=!chatOpen;
   document.getElementById('chat-window').classList.toggle('open',chatOpen);
   document.getElementById('chat-fab').textContent=chatOpen?'✕':'🤖';
   if(chatOpen)document.getElementById('chat-input').focus();
 }
-
+ 
 function sendSuggestion(el){
   document.getElementById('chat-input').value=el.textContent;
   document.getElementById('chat-suggestions').style.display='none';
   sendChat();
 }
-
+ 
 async function sendChat(){
   const inp=document.getElementById('chat-input');
   const text=inp.value.trim();if(!text)return;
   inp.value='';
-
+ 
   appendMsg(text,'user');
   chatHistory.push({role:'user',content:text});
-
+ 
   const thinking=appendThinking();
-
+ 
   const systemPrompt=`You are an expert OCR GCSE Computer Science tutor specialising in J277/01 (Computer Systems). You know the 2022, 2023 and 2024 past papers inside out. Answer questions clearly, concisely and at GCSE level. Use simple language. When relevant, mention OCR mark scheme keywords. Keep answers under 150 words. Be encouraging and supportive. Never use markdown formatting — plain text only.`;
-
+ 
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:systemPrompt,messages:chatHistory.slice(-10)})});
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:systemPrompt,messages:chatHistory.slice(-10)})});
     const d=await r.json();
     const resp=d.content&&d.content[0]&&d.content[0].text?d.content[0].text:'Sorry, I couldn\'t get a response. Check your connection.';
     thinking.remove();
@@ -740,20 +740,20 @@ async function sendChat(){
     chatHistory.push({role:'assistant',content:resp});
   }catch(e){thinking.remove();appendMsg('Connection error — make sure you\'re online.','ai');}
 }
-
+ 
 function appendMsg(text,role){
   const msgs=document.getElementById('chat-messages');
   const div=document.createElement('div');div.className=`msg msg-${role}`;div.textContent=text;
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;
 }
-
+ 
 function appendThinking(){
   const msgs=document.getElementById('chat-messages');
   const div=document.createElement('div');div.className='msg msg-thinking';
   div.innerHTML='<div class="ai-thinking"><span></span><span></span><span></span></div>';
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;
 }
-
+ 
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
